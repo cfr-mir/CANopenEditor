@@ -1,0 +1,8 @@
+HOW TO BUILD with mono:
+
+run:
+    * nuget restore EDSEditor.sln 
+    * msbuild EDSEditor.sln 
+
+You are done :-)
+

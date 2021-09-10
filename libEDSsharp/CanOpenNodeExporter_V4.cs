@@ -46,6 +46,7 @@ namespace libEDSsharp
         private Dictionary<string, int> ODArrSize;
 
         UInt16 CNT_NMT = 0;
+        UInt16 CNT_HB_PROD = 0;
         UInt16 CNT_HB_CONS = 0;
         UInt16 CNT_EM = 0;
         UInt16 CNT_SDO_SRV = 0;
@@ -103,8 +104,10 @@ namespace libEDSsharp
                     continue;
                 // The code below is nessesary if you have old eds file, that do not have "CO_countLabel" set.
                 // Count objects for initialization of CO_config_t object.
-                if (od.Index==0x1017)
+                if (od.Index==0x1000)
                     CNT_NMT++;
+                if (od.Index==0x1017)
+                    CNT_HB_PROD++;
                 if (od.Index==0x1016)
                     CNT_HB_CONS++;
                 if ((od.Index==0x1014 || od.Index==0x1015) && CNT_EM==0)
@@ -183,7 +186,9 @@ namespace libEDSsharp
             if (ODCnt.Count==0) {
                 ODCnt.Add("HB_CONS", CNT_HB_CONS);
                 ODCnt.Add("NMT", CNT_NMT);
+                ODCnt.Add("HB_PROD", CNT_HB_PROD);
                 ODCnt.Add("EM", CNT_EM);
+                ODCnt.Add("EM_PROD", CNT_EM);
                 ODCnt.Add("SDO_SRV", CNT_SDO_SRV);
                 ODCnt.Add("SDO_CLI", CNT_SDO_CLI);
                 ODCnt.Add("TIME", CNT_TIME);
@@ -511,7 +516,6 @@ namespace libEDSsharp
     Object dictionary entries - shortcuts with names
 *******************************************************************************/
 {0}", string.Join("\n", ODDefinesLong)));
-
             file.WriteLine($@"
 
 /*******************************************************************************

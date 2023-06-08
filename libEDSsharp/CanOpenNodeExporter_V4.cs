@@ -170,7 +170,7 @@ namespace libEDSsharp
                 ODDefinesLong.Add($"#define {odname}_ENTRY_H{varName} &{odname}->list[{ODList.Count}]");
 
                 // object dictionary
-                ODList.Add($"{{0x{indexH}, 0x{subEntriesCount:X2}, ODT_{odObjectType}, &{odname}Objs.o_{varName}, NULL}}");
+                ODList.Add($"{{INIT_OD_ENTRY(0x{indexH}, 0x{subEntriesCount:X2}, ODT_{odObjectType}, &{odname}Objs.o_{varName}, NULL)}}");
 
                 // count labels
                 if (od.prop.CO_countLabel != null && od.prop.CO_countLabel != "")
@@ -604,6 +604,12 @@ namespace libEDSsharp
 #include ""301/CO_ODinterface.h""
 #include ""{1}.h""
 
+#ifdef OD_EXTENSION_LIST
+#define INIT_OD_ENTRY(a,b,c,d,e) a,b,c,d
+#else
+#define INIT_OD_ENTRY(a,b,c,d,e) a,b,c,d,e
+#endif
+
 #if CO_VERSION_MAJOR < 4
 #error This Object dictionary is compatible with CANopenNode V4.0 and above!
 #endif", gitVersion, filename));
@@ -646,7 +652,7 @@ static CO_PROGMEM {0}Objs_t {0}Objs = {{
 *******************************************************************************/
 static {0}_ATTR_OD OD_entry_t {0}List[] = {{
     {1},
-    {{0x0000, 0x00, 0, NULL, NULL}}
+    {{INIT_OD_ENTRY(0x0000, 0x00, 0, NULL, NULL)}}
 }};
 
 static OD_t _{0} = {{
@@ -654,7 +660,7 @@ static OD_t _{0} = {{
     &{0}List[0]
 }};
 
-OD_t *{0} = &_{0};", odname, string.Join(",\n    ", ODList)));
+{0}_ATTR_OD OD_t *{0} = &_{0};", odname, string.Join(",\n    ", ODList)));
 
             file.Close();
         }
